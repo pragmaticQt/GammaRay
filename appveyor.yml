@@ -19,7 +19,7 @@ init:
 install:
 - ps: |
     #use cmd to silence powershell behaviour for stderr
-    & cmd /C "git clone -q --depth=1 git://anongit.kde.org/craftmaster.git C:\CraftMaster\CraftMaster 2>&1"
+    & cmd /C "git clone -q --depth=1 https://anongit.kde.org/craftmaster.git C:\CraftMaster\CraftMaster 2>&1"
     craft craft
     craft --install-deps gammaray
 
