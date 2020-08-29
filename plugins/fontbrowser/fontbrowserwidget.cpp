@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Stephen Kelly <stephen.kelly@kdab.com>
   Author: Milian Wolff <milian.wolff@kdab.com>
 
@@ -33,8 +33,10 @@
 #include "fontbrowserclient.h"
 
 #include <common/objectbroker.h>
+#include <ui/searchlinecontroller.h>
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QDebug>
 
 using namespace GammaRay;
@@ -78,11 +80,19 @@ FontBrowserWidget::FontBrowserWidget(QWidget *parent)
 
     QAbstractItemModel *fontModel = ObjectBroker::model(QStringLiteral(
                                                             "com.kdab.GammaRay.FontModel"));
+    auto proxy = new QSortFilterProxyModel(this);
+    proxy->setSourceModel(fontModel);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    proxy->setRecursiveFilteringEnabled(true);
+#endif
+    proxy->setFilterRole(FontBrowserInterface::FontSearchRole);
+    proxy->setSortRole(FontBrowserInterface::SortRole);
+    new SearchLineController(ui->fontSearchLine, proxy);
     ui->fontTree->header()->setObjectName("fontTreeHeader");
     ui->fontTree->setDeferredResizeMode(0, QHeaderView::ResizeToContents);
     ui->fontTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    ui->fontTree->setModel(fontModel);
-    ui->fontTree->setSelectionModel(ObjectBroker::selectionModel(fontModel));
+    ui->fontTree->setModel(proxy);
+    ui->fontTree->setSelectionModel(ObjectBroker::selectionModel(proxy));
 
     ui->pointSize->setValue(font().pointSize());
 

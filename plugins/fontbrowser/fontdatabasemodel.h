@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2015-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -42,6 +42,18 @@ public:
     explicit FontDatabaseModel(QObject *parent = nullptr);
     ~FontDatabaseModel() override;
 
+    enum Columns {
+        Label,
+        Weight,
+        Bold,
+        Italic,
+        Scalable,
+        SmoothlyScalable,
+        BitmapScalable,
+        SmoothSizes,
+        NUM_COLUMNS
+    };
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -50,6 +62,9 @@ public:
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &child) const override;
+
+    QHash<int, QByteArray> roleNames() const override;
+    QMap<int, QVariant> itemData(const QModelIndex &index) const override;
 
 private:
     void ensureModelPopulated() const;

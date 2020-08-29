@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2014-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -49,9 +49,12 @@ bool TcpServerDevice::listen()
 {
     const QHostAddress address(m_address.host());
     // try the requested port first, and fall back to a random port otherwise
-    if (m_server->listen(address, m_address.port()))
-        return true;
-    return m_server->listen(address, 0);
+    auto result = m_server->listen(address, m_address.port());
+    if (!result) {
+        result = m_server->listen(address, 0);
+    }
+    emit externalAddressChanged();
+    return result;
 }
 
 bool TcpServerDevice::isListening() const
@@ -109,8 +112,8 @@ QUrl TcpServerDevice::externalAddress() const
             myHost = QHostAddress(QHostAddress::LocalHostIPv6).toString();
             break;
         case QAbstractSocket::UnknownNetworkLayerProtocol:
-            Q_ASSERT_X(false, "TcpServerDevice::externalAddress", "unknown TCP protocol");
-            break;
+            qWarning() << "TcpServerDevice::externalAddress - unknown TCP protocol";
+            return m_address;
         }
     }
 

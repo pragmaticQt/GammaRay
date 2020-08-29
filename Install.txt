@@ -8,6 +8,14 @@ c:/Program Files on Windows and /Applications on MacOS.
 You can change this location by passing the option
 -DCMAKE_INSTALL_PREFIX=/install/path to cmake.
 
+Your system's installation of Qt will be used by default, which
+may not be the same as the Qt returned by `qmake -v`.
+To specify the Qt version to build against, use cmake option
+CMAKE_PREFIX_PATH, and point it to the gcc(_64) folder of your 
+installation:
+
+% cmake -DCMAKE_PREFIX_PATH=$HOME/Qt/5.11.2/gcc_64 ..`
+
 To build a debug version pass -DCMAKE_BUILD_TYPE=Debug to cmake.
 
 To build GammaRay you will need *at least*:
@@ -46,13 +54,15 @@ Now build:
 Build on Android:
 $ mkdir android-build
 $ cd android-build
-$ export ANDROID_NDK=~/path/to/android-ndk
-$ cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-android.cmake \
-        -DGAMMARAY_BUILD_UI=OFF \
-        -DCMAKE_PREFIX_PATH=/android/qt5/install/path \
-        -DCMAKE_INSTALL_PREFIX=/android/qt5/install/path ..
+$ export ANDROID_NDK=/path/to/android-ndk
+$ cmake -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
+        -DCMAKE_FIND_ROOT_PATH=/android/qt5/install/path \
+        -DCMAKE_INSTALL_PREFIX=/install/path ..
 $ make [-j CPU_NUMBER+2]
 $ make install
+
+For more information about building CMake projects on Android see
+https://developer.android.com/ndk/guides/cmake
 
 Using GammaRay on Android:
  - add GammaRay probe to your android .pro file

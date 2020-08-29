@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2014-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -316,6 +316,11 @@ void RenderModeRequest::apply()
     if (connection)
         disconnect(connection);
 
+#if QT_VERSION == QT_VERSION_CHECK(5, 14, 0) || QT_VERSION == QT_VERSION_CHECK(5, 14, 1)
+    // there's a regression in Qt 5.14...
+    return;
+#endif
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
     if (window && window->rendererInterface()->graphicsApi() != QSGRendererInterface::OpenGL)
         return;
@@ -610,6 +615,11 @@ void QuickInspector::slotGrabWindow()
 void QuickInspector::setCustomRenderMode(
     GammaRay::QuickInspectorInterface::RenderMode customRenderMode)
 {
+#if QT_VERSION == QT_VERSION_CHECK(5, 14, 0) || QT_VERSION == QT_VERSION_CHECK(5, 14, 1)
+    // there's a regression in Qt 5.14...
+    return;
+#endif
+
     m_renderMode = customRenderMode;
 
     m_pendingRenderMode->applyOrDelay(m_window, customRenderMode);
@@ -631,9 +641,12 @@ void QuickInspector::checkFeatures()
     }
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
+#if QT_VERSION != QT_VERSION_CHECK(5, 14, 0) && QT_VERSION != QT_VERSION_CHECK(5, 14, 1)
     if (m_window->rendererInterface()->graphicsApi() == QSGRendererInterface::OpenGL)
         f = AllCustomRenderModes;
-    else if (m_window->rendererInterface()->graphicsApi() == QSGRendererInterface::Software)
+    else
+#endif
+    if (m_window->rendererInterface()->graphicsApi() == QSGRendererInterface::Software)
         f = AnalyzePainting;
 #else
     f = AllCustomRenderModes;

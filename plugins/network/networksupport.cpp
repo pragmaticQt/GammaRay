@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2016-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -59,6 +59,7 @@
 #include <QSslSocket>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QDateTime>
 
 #include <functional>
 
@@ -88,7 +89,9 @@ Q_DECLARE_METATYPE(QNetworkInterface::InterfaceFlags)
 #endif
 Q_DECLARE_METATYPE(QNetworkProxy::Capabilities)
 Q_DECLARE_METATYPE(QNetworkProxy::ProxyType)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 Q_DECLARE_METATYPE(QSocketNotifier::Type)
+#endif
 #ifndef QT_NO_SSL
 Q_DECLARE_METATYPE(QSsl::KeyAlgorithm)
 Q_DECLARE_METATYPE(QSsl::KeyType)

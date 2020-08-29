@@ -1,8 +1,9 @@
 Name:           gammaray
-Version:        2.11.0
+Version:        2.11.1
 Release:        1
 Summary:        An introspection tool for Qt applications
-Source:         %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
+Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/GammaRay
 Group:          Development/Tools
 License:        GPL-2.0+
@@ -27,6 +28,9 @@ BuildRequires:  ghostscript-core
 %endif
 %if 0%{?fedora} > 24
 BuildRequires:  qt5-qt3d-devel wayland-devel qt5-qtwayland-devel kf5-syndication-devel
+%endif
+%if 0%{?fedora} > 30
+BuildRequires:  qt5-qtbase-private-devel
 %endif
 %endif
 
@@ -73,7 +77,7 @@ The %{name}-devel package contains libraries and header files for
 developing GammaRay plug-ins.
 
 %prep
-%setup -q
+%autosetup
 
 %build
 cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
@@ -172,6 +176,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_USE
 %{_prefix}/mkspecs/modules/*.pri
 
 %changelog
+* Tue Mar 03 2020 Allen Winter <allen.winter@kdab.com> 2.11.1
+  2.11.1 patchlevel release
 * Wed Jul 03 2019 Allen Winter <allen.winter@kdab.com> 2.11.0
   2.11.0 final
 * Sun Dec 16 2018 Allen Winter <allen.winter@kdab.com> 2.10.0

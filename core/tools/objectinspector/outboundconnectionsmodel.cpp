@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2014-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2014-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -57,32 +57,38 @@ QVector<AbstractConnectionsModel::Connection> OutboundConnectionsModel::outbound
     QObjectPrivate *d = QObjectPrivate::get(object);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     QObjectPrivate::ConnectionData *cd = d->connections.load();
-    if (cd) {
-        auto &cl = *(cd->signalVector.load());
-#else
-    if (d->connectionLists) {
-        // HACK: the declaration of d->connectionsLists is not accessible for us...
-        const auto &cl = *reinterpret_cast<QVector<QObjectPrivate::ConnectionList> *>(d->connectionLists);
-#endif
-        for (int signalIndex = 0; signalIndex < cl.count(); ++signalIndex) {
-            const QObjectPrivate::Connection *c = cl.at(signalIndex).first;
-            while (c) {
-                if (!c->receiver || Probe::instance()->filterObject(c->receiver)) {
-                    c = c->nextConnectionList;
-                    continue;
-                }
+    if (!cd)
+        return connections;
 
-                Connection conn;
-                conn.endpoint = c->receiver;
-                conn.signalIndex = signalIndexToMethodIndex(object, signalIndex);
-                if (c->isSlotObject)
-                    conn.slotIndex = -1;
-                else
-                conn.slotIndex = c->method();
-                conn.type = c->connectionType;
+    auto cl = cd->signalVector.load();
+#else
+    if (!d->connectionLists)
+        return connections;
+
+    // HACK: the declaration of d->connectionsLists is not accessible for us...
+    const auto cl = reinterpret_cast<QVector<QObjectPrivate::ConnectionList> *>(d->connectionLists);
+#endif
+    if (!cl)
+        return connections;
+
+    for (int signalIndex = 0; signalIndex < cl->count(); ++signalIndex) {
+        const QObjectPrivate::Connection *c = cl->at(signalIndex).first;
+        while (c) {
+            if (!c->receiver || Probe::instance()->filterObject(c->receiver)) {
                 c = c->nextConnectionList;
-                connections.push_back(conn);
+                continue;
             }
+
+            Connection conn;
+            conn.endpoint = c->receiver;
+            conn.signalIndex = signalIndexToMethodIndex(object, signalIndex);
+            if (c->isSlotObject)
+                conn.slotIndex = -1;
+            else
+            conn.slotIndex = c->method();
+            conn.type = c->connectionType;
+            c = c->nextConnectionList;
+            connections.push_back(conn);
         }
     }
 

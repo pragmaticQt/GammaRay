@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2017-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2017-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -44,7 +44,7 @@ TimezoneClientModel::~TimezoneClientModel() = default;
 
 QVariant TimezoneClientModel::data(const QModelIndex& index, int role) const
 {
-    if (role == Qt::ToolTipRole && index.column() > 0) {
+    if (role == Qt::ToolTipRole && index.column() != 0 && index.column() != TimezoneModelColumns::StandardDisplayNameColumn) {
         return QIdentityProxyModel::data(index.sibling(index.row(), 0), role);
     } else if (role == Qt::DisplayRole && index.column() == TimezoneModelColumns::DSTColumn) {
         const auto v = QIdentityProxyModel::data(index, Qt::DisplayRole);

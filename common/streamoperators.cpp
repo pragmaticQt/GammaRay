@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2013-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2013-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -44,6 +44,7 @@ QT_BEGIN_NAMESPACE
 GAMMARAY_ENUM_STREAM_OPERATORS(QMetaMethod::Access)
 GAMMARAY_ENUM_STREAM_OPERATORS(QMetaMethod::MethodType)
 GAMMARAY_ENUM_STREAM_OPERATORS(Qt::ConnectionType)
+GAMMARAY_ENUM_STREAM_OPERATORS(Qt::CaseSensitivity)
 GAMMARAY_ENUM_STREAM_OPERATORS(GammaRay::QMetaObjectValidatorResult::Results)
 GAMMARAY_ENUM_STREAM_OPERATORS(GammaRay::PropertyModel::PropertyFlags)
 QT_END_NAMESPACE
@@ -53,6 +54,7 @@ void StreamOperators::registerOperators()
     qRegisterMetaTypeStreamOperators<QMetaMethod::Access>();
     qRegisterMetaTypeStreamOperators<QMetaMethod::MethodType>();
     qRegisterMetaTypeStreamOperators<Qt::ConnectionType>();
+    qRegisterMetaTypeStreamOperators<Qt::CaseSensitivity>();
     qRegisterMetaTypeStreamOperators<QHash<int, QByteArray> >();
 
     qRegisterMetaType<ObjectId>();

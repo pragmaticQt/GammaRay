@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2019-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -149,8 +149,10 @@ void NetworkReplyModel::objectCreated(QObject *obj)
         endInsertRows();
 
         connect(nam, &QNetworkAccessManager::finished, this, [this, nam](QNetworkReply *reply) { replyFinished(reply, nam); }, Qt::DirectConnection);
+#ifndef QT_NO_SSL
         connect(nam, &QNetworkAccessManager::encrypted, this, [this, nam](QNetworkReply *reply) { replyEncrypted(reply, nam); }, Qt::DirectConnection);
         connect(nam, &QNetworkAccessManager::sslErrors, this, [this, nam](QNetworkReply *reply, const QList<QSslError> &errors) { replySslErrors(reply, errors, nam); });
+#endif
     }
 
     if (auto reply = qobject_cast<QNetworkReply*>(obj)) {
@@ -218,6 +220,15 @@ void NetworkReplyModel::replyFinished(QNetworkReply* reply, QNetworkAccessManage
     }
 }
 
+void NetworkReplyModel::replyProgress(QNetworkReply* reply, qint64 progress, qint64 total, QNetworkAccessManager *nam)
+{
+    ReplyNode node;
+    node.reply = reply;
+    node.size = std::max(progress, total);
+    updateReplyNode(nam, node);
+}
+
+#ifndef QT_NO_SSL
 void NetworkReplyModel::replyEncrypted(QNetworkReply* reply, QNetworkAccessManager *nam)
 {
     /// WARNING this runs in the thread of the reply, not the thread of this!
@@ -229,14 +240,6 @@ void NetworkReplyModel::replyEncrypted(QNetworkReply* reply, QNetworkAccessManag
     node.state |= NetworkReply::Encrypted;
 
     QMetaObject::invokeMethod(this, "updateReplyNode", Qt::AutoConnection, Q_ARG(QNetworkAccessManager*, nam), Q_ARG(GammaRay::NetworkReplyModel::ReplyNode, node));
-}
-
-void NetworkReplyModel::replyProgress(QNetworkReply* reply, qint64 progress, qint64 total, QNetworkAccessManager *nam)
-{
-    ReplyNode node;
-    node.reply = reply;
-    node.size = std::max(progress, total);
-    updateReplyNode(nam, node);
 }
 
 void NetworkReplyModel::replySslErrors(QNetworkReply* reply, const QList<QSslError>& errors, QNetworkAccessManager *nam)
@@ -254,6 +257,7 @@ void NetworkReplyModel::replySslErrors(QNetworkReply* reply, const QList<QSslErr
 
     QMetaObject::invokeMethod(this, "updateReplyNode", Qt::AutoConnection, Q_ARG(QNetworkAccessManager*, nam), Q_ARG(GammaRay::NetworkReplyModel::ReplyNode, node));
 }
+#endif
 
 void NetworkReplyModel::replyDeleted(QNetworkReply* reply, QNetworkAccessManager* nam)
 {

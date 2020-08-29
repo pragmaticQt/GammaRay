@@ -2,7 +2,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2017-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2017-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Kevin Funk <kevin.funk@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -76,12 +76,12 @@ public:
 
         auto ptr = m_pool.top().release();
         IF_DEBUG(std::cout << "Acquire: " << ptr << std::endl);
-        PtrType tmp(ptr, [this](T* ptr) {
+        PtrType tmp(ptr, [this](T *ptr) {
             IF_DEBUG(std::cout << "Release: " << ptr << std::endl);
             m_pool.push(std::unique_ptr<T>(ptr));
         });
         m_pool.pop();
-        return std::move(tmp);
+        return tmp;
     }
 
     bool empty() const

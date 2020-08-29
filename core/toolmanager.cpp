@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2013-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2013-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Anton Kreuzkamp <anton.kreuzkamp@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -31,6 +31,7 @@
 #include "metaobject.h"
 #include "metaobjectrepository.h"
 #include "probe.h"
+#include "probesettings.h"
 #include "proxytoolfactory.h"
 #include "toolfactory.h"
 
@@ -204,22 +205,25 @@ void ToolManager::objectAdded(const QMetaObject *mo)
     if (mo->superClass())
         objectAdded(mo->superClass());
 
-    for (auto it = m_disabledTools.begin(); it != m_disabledTools.end();) {
-        ToolFactory *factory = *it;
+    // operate on copy to ensure potential recursion isn't invalidating the iterators
+    const auto disabledToolsCopy = m_disabledTools;
+    for (auto *factory : disabledToolsCopy) {
         const auto begin = factory->supportedTypes().constBegin();
         const auto end = factory->supportedTypes().constEnd();
-        if (std::find(begin, end, mo->className()) != end) {
-            it = m_disabledTools.erase(it);
+        if (std::find(begin, end, mo->className()) != end && m_disabledTools.remove(factory)) {
             factory->init(Probe::instance());
             emit toolEnabled(factory->id());
-        } else {
-            ++it;
         }
     }
 }
 
 void ToolManager::addToolFactory(ToolFactory *tool)
 {
+    const auto excludedTools = ProbeSettings::value(QStringLiteral("DisabledPlugins"), QString()).toString();
+    if (excludedTools.split(QLatin1Char(';')).contains(tool->id())) {
+        return;
+    }
+
     m_tools.push_back(tool);
     m_disabledTools.insert(tool);
 }

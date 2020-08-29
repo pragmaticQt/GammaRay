@@ -2,7 +2,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2018-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2018-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Anton Kreuzkamp <anton.kreuzkamp@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -53,7 +53,7 @@
 #include <QKeySequence>
 #endif
 
-namespace GammaRay {
+using namespace GammaRay;
 
 class CrossThreadConnectionTask : public QRunnable
 {
@@ -89,6 +89,7 @@ public:
     UnregisteredType someProp() const { return {}; }
 };
 
+namespace GammaRay {
 class ProblemReporterTest : public BaseProbeTest
 {
     Q_OBJECT
@@ -426,10 +427,10 @@ private slots:
 #ifdef HAVE_QT_WIDGETS
     void testActionValidator()
     {
-        QAction *a1 = new QAction(QStringLiteral("Action 1"), this);
+        QAction *a1 = new QAction(QStringLiteral("Action 1"), qApp);
         a1->setShortcut(QKeySequence(QStringLiteral("Ctrl+K")));
         a1->setShortcutContext(Qt::ApplicationShortcut);
-        QAction *a2 = new QAction(QStringLiteral("Action 2"), this);
+        QAction *a2 = new QAction(QStringLiteral("Action 2"), qApp);
         a2->setShortcut(QKeySequence(QStringLiteral("Ctrl+K")));
         a2->setShortcutContext(Qt::WidgetShortcut);
         QTest::qWait(1); // event loop re-entry

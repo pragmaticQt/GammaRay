@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Stephen Kelly <stephen.kelly@kdab.com>
   Author: Milian Wolff <milian.wolff@kdab.com>
 
@@ -59,7 +59,7 @@ void FontBrowserServer::updateFonts()
     QVector<QFont> currentFonts;
     currentFonts.reserve(rows.size());
     for (const QModelIndex &index : rows)
-        currentFonts << index.data(Qt::UserRole + 1).value<QFont>();
+        currentFonts << index.data(FontRole).value<QFont>();
     m_selectedFontModel->updateFonts(currentFonts);
 }
 

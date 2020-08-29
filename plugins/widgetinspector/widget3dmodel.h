@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2011-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2011-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Daniel Vrátil <daniel.vratil@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -64,8 +64,8 @@ public:
     // the value for comparison, we can convert back to quintptr in C++
     inline QString id() const {
         QString str(8, QLatin1Char('0'));
-        const quint64 ptr = reinterpret_cast<quint64>(mQWidget.data());
-        std::memcpy(str.data(), &ptr, 8);
+        quint64 ptr = reinterpret_cast<quint64>(mQWidget.data());
+        std::memcpy(str.data(), static_cast<void*>(&ptr), 8);
         return str;
     };
 

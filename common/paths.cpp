@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2013-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2013-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -128,12 +128,17 @@ QStringList pluginPaths(const QString &probeABI)
     foreach (const auto &path, QCoreApplication::libraryPaths()) {
         addPluginPath(l, path + QLatin1String("/gammaray/" GAMMARAY_PLUGIN_VERSION "/") + probeABI);
         addPluginPath(l, path + QLatin1String("/gammaray"));
+
+#if defined(Q_OS_ANDROID) && QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+        addPluginPath(l, path);
+#endif
     }
 
     // based on Qt's own install layout and/or qt.conf
     const auto path = QLibraryInfo::location(QLibraryInfo::PluginsPath);
     addPluginPath(l, path + QLatin1String("/gammaray/" GAMMARAY_PLUGIN_VERSION "/") + probeABI);
     addPluginPath(l, path + QLatin1String("/gammaray"));
+
 
     return l;
 }
@@ -175,6 +180,8 @@ QString libraryExtension()
     return QStringLiteral(".dll");
 #elif defined(Q_OS_MAC)
     return QStringLiteral(".dylib");
+#elif defined(Q_OS_ANDROID) && QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    return QLatin1Char('_') + QLatin1String(ANDROID_ABI) + QLatin1String(".so");
 #else
     return QStringLiteral(".so");
 #endif

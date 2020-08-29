@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Filipe Azevedo <filipe.azevedo@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -185,8 +185,6 @@ protected:
     bool m_decorationsEnabled = true;
     QRectF m_userViewport;
     GrabbedFrame m_grabbedFrame;
-    QMetaMethod m_sceneChanged;
-    QMetaMethod m_sceneGrabbed;
     RenderInfo m_renderInfo;
 };
 

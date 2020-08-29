@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2019-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Tim Henning <tim.henning@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -230,6 +230,9 @@ void EventTypeModel::initEventTypes()
     for (int i = 0; i < e.keyCount(); ++i) {
         EventTypeData ev;
         ev.type = static_cast<QEvent::Type>(e.value(i));
+        if (ev.type == QEvent::MetaCall) { // expensive to record types are off by default
+            ev.recordingEnabled = false;
+        }
         m_data.push_back(ev);
     }
     std::sort(m_data.begin(), m_data.end());

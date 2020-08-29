@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2016-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Giulio Camuffo <giulio.camuffo@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -563,7 +563,6 @@ void WlCompositorInspector::init(QWaylandCompositor *compositor)
 
     wl_list *clients = wl_display_get_client_list(dpy);
     wl_client *client;
-    // cppcheck-suppress uninitvar
     wl_client_for_each(client, clients) {
         addClient(client);
     }

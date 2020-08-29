@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Milian Wolff <milian.wolff@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -30,7 +30,8 @@
 
 #ifdef Q_OS_WIN32
 #ifndef NOMINMAX
-// compile fix for Qt5+VS2010+QDateTime, see: http://qt-project.org/forums/viewthread/22133
+// compile fix for Qt5+VS2010+QDateTime, see:
+// https://forum.qt.io/topic/21605/solved-qt5-vs2010-qdatetime-not-enough-actual-parameters-for-macro-min-max
 #define NOMINMAX
 #endif
 
@@ -77,6 +78,7 @@ void AttachHelper::attach()
 {
     if (m_proc->state() != QProcess::Running)
         return;
+
     qDebug() << "attaching gammaray";
     QProcess gammaray;
     gammaray.setProcessChannelMode(QProcess::ForwardedChannels);

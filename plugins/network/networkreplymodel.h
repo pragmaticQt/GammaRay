@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2019-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -81,9 +81,11 @@ private:
     };
 
     void replyFinished(QNetworkReply *reply, QNetworkAccessManager *nam);
-    void replyEncrypted(QNetworkReply *reply, QNetworkAccessManager *nam);
     void replyProgress(QNetworkReply *reply, qint64 progress, qint64 total, QNetworkAccessManager *nam);
+#ifndef QT_NO_SSL
+    void replyEncrypted(QNetworkReply *reply, QNetworkAccessManager *nam);
     void replySslErrors(QNetworkReply *reply, const QList<QSslError> &errors, QNetworkAccessManager *nam);
+#endif
     void replyDeleted(QNetworkReply *reply, QNetworkAccessManager *nam);
 
     Q_INVOKABLE void updateReplyNode(QNetworkAccessManager *nam, const GammaRay::NetworkReplyModel::ReplyNode &newNode);

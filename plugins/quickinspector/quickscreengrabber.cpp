@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Filipe Azevedo <filipe.azevedo@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -264,12 +264,6 @@ AbstractScreenGrabber::AbstractScreenGrabber(QQuickWindow *window)
     : m_window(window)
     , m_currentToplevelItem(nullptr)
 {
-    const QMetaObject *mo = metaObject();
-    m_sceneChanged = mo->method(mo->indexOfSignal(QMetaObject::normalizedSignature("sceneChanged()")));
-    Q_ASSERT(m_sceneChanged.methodIndex() != -1);
-    m_sceneGrabbed = mo->method(mo->indexOfSignal(QMetaObject::normalizedSignature("sceneGrabbed(GammaRay::GrabbedFrame)")));
-    Q_ASSERT(m_sceneGrabbed.methodIndex() != -1);
-
     qRegisterMetaType<GrabbedFrame>();
 
     placeOn(ItemOrLayoutFacade());
@@ -666,7 +660,7 @@ void OpenGLScreenGrabber::windowAfterRendering()
 
         // Let emit the signal even if our image is possibly null, this way we make perfect ping/pong
         // reuests making it easier to unit test.
-        m_sceneGrabbed.invoke(this, Qt::QueuedConnection, Q_ARG(GammaRay::GrabbedFrame, m_grabbedFrame));
+        emit sceneGrabbed(m_grabbedFrame);
     }
 
     drawDecorations();
@@ -677,7 +671,7 @@ void OpenGLScreenGrabber::windowAfterRendering()
         locker.unlock();
         setGrabbingMode(false, QRectF());
     } else {
-        m_sceneChanged.invoke(this, Qt::QueuedConnection);
+        emit sceneChanged();
     }
 }
 
@@ -787,7 +781,7 @@ void SoftwareScreenGrabber::windowAfterRendering()
 #if QT_VERSION >= QT_VERSION_CHECK(5, 9, 3)
     if (!m_isGrabbing) {
         drawDecorations();
-        m_sceneChanged.invoke(this, Qt::QueuedConnection);
+        emit sceneChanged();
     } else {
         m_isGrabbing = false;
     }

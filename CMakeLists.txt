@@ -145,11 +145,11 @@ endif()
 # Version setup
 set(GAMMARAY_VERSION_MAJOR "2")
 set(GAMMARAY_VERSION_MINOR "11")
-set(GAMMARAY_VERSION_PATCH "0")
+set(GAMMARAY_VERSION_PATCH "50")
 set(GAMMARAY_VERSION "${GAMMARAY_VERSION_MAJOR}.${GAMMARAY_VERSION_MINOR}.${GAMMARAY_VERSION_PATCH}")
 set(GAMMARAY_VERSION_STRING "${GAMMARAY_VERSION}")
-set(GAMMARAY_SOVERSION "2.11.0")
-set(GAMMARAY_PLUGIN_VERSION "2.11")
+set(GAMMARAY_SOVERSION "2.12.0")
+set(GAMMARAY_PLUGIN_VERSION "2.12")
 set(PROJECT_VERSION_STRING "${GAMMARAY_VERSION_STRING}")
 if(ANDROID)
   # non-rooted Android doesn't like .so versions and requires the lib prefix
@@ -270,7 +270,7 @@ endmacro()
 function(check_private_headers_exist module)
   message(STATUS "Checking whether private include directories for module ${module} exist")
   # backward compatibility with Qt < 5.9
-  if (TARGET Qt5::${module}Private)
+  if(TARGET Qt5::${module}Private)
     get_target_property(private_includes Qt5::${module}Private INTERFACE_INCLUDE_DIRECTORIES)
     set(Qt5${module}_PRIVATE_INCLUDE_DIRS "${private_includes}" PARENT_SCOPE)
   endif()
@@ -390,6 +390,7 @@ find_package(Qt5 NO_MODULE QUIET OPTIONAL_COMPONENTS
   3DLogic
   3DRender
   3DQuick
+  AndroidExtras
   Bluetooth
   Concurrent
   Designer
@@ -407,6 +408,23 @@ find_package(Qt5 NO_MODULE QUIET OPTIONAL_COMPONENTS
   Widgets
   WaylandCompositor
 )
+
+set(MACOS_DISABLE_UNSUPPORTED_TESTS FALSE)
+if(APPLE)
+  cmake_host_system_information(RESULT MACOS_RELEASE QUERY OS_RELEASE)
+  message(STATUS "MACOS_RELEASE: ${MACOS_RELEASE}")
+  message(STATUS "Qt5Quick_VERSION: ${Qt5Quick_VERSION}")
+  if(MACOS_RELEASE VERSION_GREATER_EQUAL 10.15.0 AND Qt5Quick_VERSION VERSION_LESS 5.12.0)
+    # Qt Quick is only supported on macOS Catalina using Qt 5.12 and above
+    set(MACOS_DISABLE_UNSUPPORTED_TESTS TRUE)
+    message(STATUS "WARNING: Your version of MacOS is too old (less then 10.15) to use with QtQuick 5.12 or higher.  You can solve this by upgrading your MacOS or using older Qt versions.  Disabling QtQuick capabilities.")
+  endif()
+endif()
+
+if(MACOS_DISABLE_UNSUPPORTED_TESTS)
+  set(Qt5Quick_FOUND FALSE)
+endif()
+
 # Find these 'exotic' Qt modules without using find_package(... COMPONENTS)
 # so we can retrieve those packages even when installed into a different prefix
 find_package(Qt5IviCore 1.1 NO_MODULE QUIET) # 1.1 is based on 5.8
@@ -448,21 +466,21 @@ check_private_header_exists(Core "private/qobject_p.h")
 check_private_headers_exist(Gui)
 list(APPEND Qt5Gui_PRIVATE_INCLUDE_DIRS ${Qt5Core_PRIVATE_INCLUDE_DIRS})
 if(Qt5Widgets_FOUND)
-    check_private_headers_exist(Widgets)
-    list(APPEND Qt5Widgets_PRIVATE_INCLUDE_DIRS ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+  check_private_headers_exist(Widgets)
+  list(APPEND Qt5Widgets_PRIVATE_INCLUDE_DIRS ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
 endif()
 if(Qt5Qml_FOUND)
-    check_private_headers_exist(Qml)
-    check_private_header_exists(Qml "private/qqmlabstractbinding_p.h")
-    list(APPEND Qt5Qml_PRIVATE_INCLUDE_DIRS ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+  check_private_headers_exist(Qml)
+  check_private_header_exists(Qml "private/qqmlabstractbinding_p.h")
+  list(APPEND Qt5Qml_PRIVATE_INCLUDE_DIRS ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
 endif()
 if(Qt5Quick_FOUND)
-    check_private_headers_exist(Quick)
-    check_private_header_exists(Quick "private/qquickitem_p.h")
-    list(APPEND Qt5Quick_PRIVATE_INCLUDE_DIRS ${Qt5Qml_PRIVATE_INCLUDE_DIRS})
+  check_private_headers_exist(Quick)
+  check_private_header_exists(Quick "private/qquickitem_p.h")
+  list(APPEND Qt5Quick_PRIVATE_INCLUDE_DIRS ${Qt5Qml_PRIVATE_INCLUDE_DIRS})
 endif()
 if(Qt5Scxml_FOUND)
-    check_private_headers_exist(Scxml)
+  check_private_headers_exist(Scxml)
 endif()
 
 set(HAVE_QT_CONCURRENT ${Qt5Concurrent_FOUND})
@@ -497,7 +515,6 @@ set_package_properties(Qt5Widget PROPERTIES TYPE RECOMMENDED PURPOSE "Required f
 set_package_properties(Qt5Svg PROPERTIES TYPE OPTIONAL PURPOSE "Required for widget SVG export.")
 set_package_properties(Qt5PrintSupport PROPERTIES TYPE OPTIONAL PURPOSE "Required for widget PDF export.")
 
-
 # debug suffixes for qmake compatibility
 if(WIN32)
   set(CMAKE_DEBUG_POSTFIX "d")
@@ -517,7 +534,7 @@ add_definitions(
   -DQT_NO_CAST_TO_ASCII
   -DQT_NO_URL_CAST_FROM_STRING
 )
-if (NOT WIN32)
+if(NOT WIN32)
   # BIC on MSVC at least (see e.g. https://bugreports.qt.io/browse/AUTOSUITE-946)
   add_definitions(-DQT_STRICT_ITERATORS)
 endif()
@@ -625,7 +642,7 @@ else()
   if(GAMMARAY_INSTALL_QT_LAYOUT)
     set(LIB_INSTALL_DIR "lib") # Qt always uses "lib"
   else()
-    set(LIB_INSTALL_DIR  "${CMAKE_INSTALL_LIBDIR}") # "lib" or "lib64"
+    set(LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}") # "lib" or "lib64"
     gammaray_convert_to_relative_path(LIB_INSTALL_DIR)
   endif()
   set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/gammaray")
@@ -746,7 +763,7 @@ endif()
 
 set(LICENSE_FILE "LICENSE.GPL.txt")
 set(README_FILE "ReadMe.txt")
-list(APPEND DOCS ${LICENSE_FILE} ${README_FILE} "LICENSE.txt" "LICENSE.US.txt" "ReadMe-commercial.txt")
+list(APPEND DOCS ${LICENSE_FILE} ${README_FILE} "LICENSE.txt")
 if(NOT APPLE AND NOT GAMMARAY_PROBE_ONLY_BUILD)
   if(UNIX AND GAMMARAY_BUILD_UI)
     install(FILES GammaRay.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
@@ -864,5 +881,8 @@ elseif(UNIX)
 endif()
 
 include(CPack)
+include(PackageIFW)
+
+addPackageTarget(GammaRay gammaray_probe install lib)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

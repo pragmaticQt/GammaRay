@@ -2,7 +2,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2012-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2012-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -61,7 +61,9 @@ PaintAnalyzerWidget::PaintAnalyzerWidget(QWidget *parent)
     ui->commandView->setDeferredResizeMode(2, QHeaderView::ResizeToContents);
 
     ui->argumentView->setItemDelegate(new PropertyEditorDelegate(this));
+    ui->argumentView->header()->setObjectName("argumentViewHeader");
     ui->stackTraceView->setItemDelegate(new PropertyEditorDelegate(this));
+    ui->stackTraceView->header()->setObjectName("stackTraceViewHeader");
 
     auto toolbar = new QToolBar;
     // Our icons are 16x16 and support hidpi, so let force iconSize on every styles

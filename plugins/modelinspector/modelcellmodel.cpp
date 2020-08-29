@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -67,7 +67,6 @@ void ModelCellModel::setModelIndex(const QModelIndex &idx)
     } else {
         m_index = idx;
         if (!m_roles.isEmpty()) {
-            // cppcheck-suppress nullPointer
             emit dataChanged(index(0, 1), index(rowCount() - 1, 1));
         }
     }

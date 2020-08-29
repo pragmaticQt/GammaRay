@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2013-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2013-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -67,12 +67,13 @@ Server::Server(QObject *parent)
         return;
 
     connect(m_serverDevice, &ServerDevice::newConnection, this, &Server::newConnection);
+    connect(m_serverDevice, &ServerDevice::externalAddressChanged, this, &Server::externalAddressChanged);
 
     m_broadcastTimer->setInterval(5 * 1000);
     m_broadcastTimer->setSingleShot(false);
-#ifndef Q_OS_ANDROID
-    m_broadcastTimer->start();
-#endif
+    if (serverAddress().scheme() == QLatin1String("tcp")) {
+        m_broadcastTimer->start();
+    }
     connect(m_broadcastTimer, &QTimer::timeout, this, &Server::broadcast);
     connect(this, &Server::disconnected, m_broadcastTimer, [this]{ m_broadcastTimer->start(); });
 
@@ -117,15 +118,15 @@ bool Server::isRemoteClient() const
 QUrl Server::serverAddress() const
 {
 #ifdef Q_OS_ANDROID
-    QUrl url(QString(QLatin1String("local://%1/+gammaray_socket")).arg(QDir::homePath()));
+    const QString defaultServerAddr = QLatin1String("local://") + QDir::homePath() + QLatin1String("/+gammaray_socket");
 #else
-    QUrl url(ProbeSettings::value(QStringLiteral(
-                                      "ServerAddress"), GAMMARAY_DEFAULT_ANY_TCP_URL).toString());
+    const QString defaultServerAddr = QString::fromUtf8(GAMMARAY_DEFAULT_ANY_TCP_URL);
+#endif
+    QUrl url(ProbeSettings::value(QStringLiteral("ServerAddress"), defaultServerAddr).toString());
     if (url.scheme().isEmpty())
         url.setScheme(QStringLiteral("tcp"));
     if (url.port() <= 0)
         url.setPort(defaultPort());
-#endif
     return url;
 }
 

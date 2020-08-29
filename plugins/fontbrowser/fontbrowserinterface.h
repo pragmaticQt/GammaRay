@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2013-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2013-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Milian Wolff <milian.wolff@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -42,6 +42,12 @@ class FontBrowserInterface : public QObject
 public:
     explicit FontBrowserInterface(QObject *parent);
     ~FontBrowserInterface() override;
+
+    enum {
+        FontRole = Qt::UserRole + 1,
+        FontSearchRole = Qt::UserRole + 2,
+        SortRole = Qt::UserRole + 3,
+    };
 
 public slots:
     virtual void updateText(const QString &text) = 0;

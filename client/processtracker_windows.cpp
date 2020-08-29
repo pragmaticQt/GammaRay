@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2016-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Filipe Azevedo <filipe.azevedo@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -76,7 +76,7 @@ private:
         Q_ASSERT(false);
     }
 
-    // cppcheck-suppress operatorEqVarError m_data and m_size
+    // cppcheck-suppress operatorEqVarError; m_data and m_size
     LocalBuffer &operator=(const LocalBuffer &other) {
         Q_UNUSED(other);
         Q_ASSERT(false);

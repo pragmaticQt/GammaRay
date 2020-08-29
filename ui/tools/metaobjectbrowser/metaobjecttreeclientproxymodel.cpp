@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2016-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -183,7 +183,6 @@ Qt::ItemFlags MetaObjectTreeClientProxyModel::flags(const QModelIndex& index) co
 
 void MetaObjectTreeClientProxyModel::findQObjectIndex()
 {
-    // cppcheck-suppress nullPointer
     auto idxList = match(index(0, 0), Qt::DisplayRole,
                          QStringLiteral("QObject"), 1,
                          Qt::MatchFixedString | Qt::MatchCaseSensitive);

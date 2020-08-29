@@ -1,4 +1,4 @@
-# <a name="title"></a> [![Logo](ui/resources/gammaray/ui/light/pixmaps/gammaray-trademark.png)](http://www.kdab.com/gammaray)
+# <a name="title"></a> [![Logo](ui/resources/gammaray/ui/light/pixmaps/gammaray-trademark.png)](https://www.kdab.com/gammaray)
 
 Introduction [![Packaging status](https://repology.org/badge/tiny-repos/gammaray.svg)](https://repology.org/metapackage/gammaray) [![Windows Build status](https://ci.appveyor.com/api/projects/status/bff5abu59vm3i73x/branch/master?svg=true)](https://ci.appveyor.com/project/KDAB/gammaray/branch/master)
 =======
@@ -46,16 +46,23 @@ Among other things GammaRay can:
 
 Contact
 =======
-* Feel free to visit us on IRC: Channel is #gammaray on Freenode (irc://irc.freenode.net/gammaray)
-* Or send mail to our mailing list: https://mail.kdab.com/mailman/listinfo/gammaray-interest
+* Feel free to visit us on IRC: Channel is #gammaray on Freenode ([Webchat](https://webchat.freenode.net/#gammaray))
+* Or send a mail to our community mailing list: gammaray-interest@kdab.com ([Mailman information](https://mail.kdab.com/mailman/listinfo/gammaray-interest))
+* Or send a mail to info@kdab.com for questions about copyright, licensing or commercial support.
 
 Get Involved
 ============
 If you want to contribute, please check out: https://github.com/KDAB/GammaRay/wiki/Get-Involved
 
 KDAB will happily accept external contributions, but substantial
-contributions will require a signed Copyright Assignment Agreement.
-Contact info@kdab.com for more information.
+contributions will require a signed Copyright Assignment Agreement
+(see docs/GammaRay-CopyrightAssignmentForm.docx).
+
+Contact info@kdab.com for more information about the Copyright Assignment
+Agreement.
+
+Please submit your contributions or issue reports from our GitHub space at
+https://github.com/KDAB/GammaRay
 
 License
 =======
@@ -63,7 +70,9 @@ The GammaRay Software is (C) 2010-2019 Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the GPL version 2 (or any later version,
 at your option).  See LICENSE.GPL.txt for license details.
 
-Commercial use is also permitted as described in ReadMe-commercial.txt.
+Commercial licensing terms are available in the included file LICENSE.txt.
+
+For terms of redistribution, refer to the corresponding license agreement.
 
 About KDAB
 ==========
@@ -80,9 +89,9 @@ around the globe on Qt as well as C++, OpenGL, 3D and more.
 
 If you would like to have a custom plugin for GammaRay to visualize, profile
 or debug your own specific components or applications, get in touch with us
-via https://www.kdab.com/contact. KDAB engineers have a lot of experience
-writing GammaRay plugins and can be contracted to help you get yours working
-and improve your development efficiency.
+via https://www.kdab.com/contact.  KDAB engineers know how to write GammaRay
+plugins and can be contracted to help you get yours working and improve your
+development efficiency.
 
 GammaRay and the GammaRay logo are registered trademarks of Klarälvdalens Datakonsult AB
 in the European Union, the United States and/or other countries.  Other product and

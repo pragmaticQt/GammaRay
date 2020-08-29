@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2016-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -48,9 +48,9 @@ private slots:
 
         LaunchOptions options;
         options.setUiMode(LaunchOptions::NoUi);
-        options.setProbeSetting("TestValue", "http://www.kdab.com/");
-        options.setLaunchArguments(QStringList(QCoreApplication::applicationDirPath()
-                                               + QStringLiteral("/probesettingsclient")));
+        options.setProbeSetting("TestValue", "https://www.kdab.com/");
+        options.setLaunchArguments(QStringList(QCoreApplication::applicationDirPath() +
+                                               QStringLiteral("/probesettingsclient")));
 
         // this will effectively disable injection, so we will just launch the process
         options.setProbePath(QCoreApplication::applicationDirPath());
@@ -68,7 +68,7 @@ private slots:
         QCOMPARE(startSpy.size(), 1);
         QCOMPARE(finishSpy.size(), 1);
 
-        QCOMPARE(launcher.serverAddress(), QUrl(QStringLiteral("http://www.kdab.com/")));
+        QCOMPARE(launcher.serverAddress(), QUrl(QStringLiteral("https://www.kdab.com/")));
     }
 };
 

@@ -4,7 +4,7 @@
   This file is part of GammaRay, the Qt application inspection and
   manipulation tool.
 
-  Copyright (C) 2010-2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Author: Volker Krause <volker.krause@kdab.com>
 
   Licensees holding valid commercial KDAB GammaRay licenses may use this file in
@@ -49,6 +49,7 @@ class QModelIndex;
 class QThread;
 class QTimer;
 class QMutex;
+class QSignalSpyCallbackSet;
 QT_END_NAMESPACE
 
 namespace GammaRay {
@@ -329,7 +330,12 @@ private:
     QTimer *m_queueTimer;
     QVector<QObject *> m_globalEventFilters;
     QVector<SignalSpyCallbackSet> m_signalSpyCallbacks;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QSignalSpyCallbackSet *m_previousSignalSpyCallbackSet;
+#else
     SignalSpyCallbackSet m_previousSignalSpyCallbackSet;
+#endif
     Server *m_server;
 };
 }
